@@ -18,10 +18,6 @@ jason_data = response.json();
 #print(len(jason_data))
 ##dbutils.fs.put("dbfs:/FileStore/rest_countries_data/result.json",string_data);
 
-
-
-
-
 # COMMAND ----------
 
 print(len(jason_data))
