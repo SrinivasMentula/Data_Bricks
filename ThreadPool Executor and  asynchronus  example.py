@@ -1,11 +1,9 @@
 # Databricks notebook source
-pip install requests
-
-# COMMAND ----------
-
 from concurrent.futures import ThreadPoolExecutor
 import time
 import requests
+import aiohttp
+import asyncio
 
 def data_from_the_api(url):
     response = requests.get(url)
@@ -15,7 +13,7 @@ def data_from_the_api(url):
 start_time_two = time.time()
 end_time_two = time.time()
 urls = ["https://restcountries.com/v3.1/all"]
-with ThreadPoolExecutor(max_workers=4) as executor:
+with ThreadPoolExecutor(max_workers=2) as executor:
     start_time_two = time.time()
     results = [executor.submit(data_from_the_api, url) for url in urls]
     end_time_two = time
@@ -88,10 +86,6 @@ print(rest_countries_data_frame.count())
 
 # COMMAND ----------
 
-pip install aiohttp
-
-# COMMAND ----------
-
 # DBTITLE 1,Example demonistrating the asynchronus programing with the asyncio library
 
 import asyncio
@@ -106,9 +100,12 @@ start_time_three = time.time()
 end_time_three = time.time()
 urls = ["https://restcountries.com/v3.1/all"]
 
+semaphore = asyncio.Semaphore(10) 
+
 async def get_the_data_from_the_api(session, url):
-    async with session.get(url) as response:
-        return await response.json()
+    async with semaphore:
+        async with session.get(url) as response:
+            return await response.json()
 start_time = time.time()
 async def main_data_from_the_api():
     start_time_three= time.time()
@@ -129,16 +126,17 @@ print(f"{result:.10f}")
 # COMMAND ----------
 
 # DBTITLE 1,Asynch and Multi Threading
-import asyncio
-import aiohttp
-import time
+
 from concurrent.futures import ThreadPoolExecutor
 
 urls = ["https://restcountries.com/v3.1/all"]
 
+semaphore = asyncio.Semaphore(10)  # Limits concurrency to 10
+
 async def get_the_data_from_the_api(session, url):
-    async with session.get(url) as response:
-        return await response.json()
+    async with semaphore:
+        async with session.get(url) as response:
+            return await response.json()
 
 async def main_data_from_the_api():
     
