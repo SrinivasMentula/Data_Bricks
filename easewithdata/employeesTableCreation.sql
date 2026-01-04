@@ -33,4 +33,28 @@ TBLPROPERTIES(
 -- COMMAND ----------
 
 -- MAGIC %python
+-- MAGIC from delta import DeltaTable
+-- MAGIC try :
+-- MAGIC   result =DeltaTable.forName(spark, "hands_on_catlog.default.corruptedRecords").toDF().limit(1).count()
+-- MAGIC   dbutils.notebook.exit("Success")
+-- MAGIC except Exception as e :
+-- MAGIC   DeltaTable.create(spark).tableName('hands_on_catlog.default.corruptedRecords')\
+-- MAGIC     .addColumn("firstName","STRING")\
+-- MAGIC     .addColumn("lastName","STRING")\
+-- MAGIC     .addColumn("jobTitle","STRING")\
+-- MAGIC     .addColumn("dob","DATE")\
+-- MAGIC     .addColumn("email","STRING")\
+-- MAGIC     .addColumn("phone","STRING")\
+-- MAGIC     .addColumn("salary","INTEGER")\
+-- MAGIC     .addColumn("departmentId","INTEGER")\
+-- MAGIC     .addColumn("_corrupt_record","STRING")\
+-- MAGIC     .addColumn("createdDate","TIMESTAMP").execute()
+
+-- COMMAND ----------
+
+-- ALTER TABLE default.corruptedrecords SET TBLPROPERTIES('delta.feature.allowColumnDefaults' = 'supported')
+
+-- COMMAND ----------
+
+-- MAGIC %python
 -- MAGIC dbutils.notebook.exit("Success")
