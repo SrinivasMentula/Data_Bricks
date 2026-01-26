@@ -189,4 +189,5 @@ for i in listOfFiles:
 
 # COMMAND ----------
 
-
+# MAGIC %sql
+# MAGIC describe  history hands_on_catlog.default.employees

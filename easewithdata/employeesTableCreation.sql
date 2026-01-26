@@ -58,3 +58,7 @@ TBLPROPERTIES(
 
 -- MAGIC %python
 -- MAGIC dbutils.notebook.exit("Success")
+
+-- COMMAND ----------
+
+SELECT * FROM default.employees
